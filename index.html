@@ -1,56 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
-<body>
-
-    <button onclick="handleOnClickWS()">WebSocket</button>
-    <button onclick="handleOnClickAPI()">API</button>
-    <input type="number" id="Breaks" placeholder="">
-    <button onclick="set()">SET</button>
-    <p id="test"></p>
+  </head>
+  <body>
+    <form>
+      <input type="number" id="Breaks" placeholder="" />
+      <input type="button" id="ws" value="WebSocket" />
+      <input type="button" id="api" value="API" />
+    </form>
 
     <script>
+      var ws = new WebSocket("ws://localhost:8000/testt");
+      document.getElementById("ws").addEventListener("click", async function (e) {
+        e.preventDefault();
+        const upper = parseInt(document.getElementById("Breaks").value);
+        let start = new Date().getTime();
 
-        let data = { 
-            id: 78912, 
-            Customer: "Jason Sweet", 
-            Nile: "And"
+        for (var i = 0; i < upper; i++) {
+          ws.send(JSON.stringify(data));
+          // ws.close();
         }
-        const options ={
-            method: "POST",
-            headers: {
-            "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-        } 
+        let end = new Date().getTime();
+        console.log(end - start);
+      });
 
-        async function handleOnClickAPI() {
-            let upper = parseInt(document.getElementById("Breaks").value)
-            
-            let start = new Date().getTime();
-            for (var i = 0; i < upper; i++) {
-                await fetch("http://localhost:8000/test", options);
-            }
+      document.getElementById("api").addEventListener("click", async function (e) {
+        e.preventDefault();
+        const upper = parseInt(document.getElementById("Breaks").value);
 
-            let end = new Date().getTime();
-            console.log(end - start);
+        let start = new Date().getTime();
+        for (var i = 0; i < upper; i++) {
+          await fetch("http://localhost:8000/test", options);
         }
 
-        async function handleOnClickWS() {
-            let start = new Date().getTime();
+        let end = new Date().getTime();
+        console.log(end - start);
+      });
 
-            for (var i = 0; i < upper; i++) {
-                var ws = new WebSocket("wss://localhost:8000/test")
-                ws.send(data);
-            }
-            let end = new Date().getTime();
-            console.log(end - start);
-        }
+      var data = {
+        id: 78912,
+        Customer: "Jason Sweet",
+        Nile: "And",
+      };
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      };
     </script>
-    
-</body>
+  </body>
 </html>
