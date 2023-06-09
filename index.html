@@ -1,49 +1,57 @@
-<script>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form>
+      <input type="number" id="Breaks" placeholder="" />
+      <input type="button" id="ws" value="WebSocket" />
+      <input type="button" id="api" value="API" />
+    </form>
 
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:8000/test");
-    xhr.setRequestHeader("Content-Type", "application/json");
-    let data = `{"Id":78912,"Customer":"Jason Sweet","Nile":"And"}`; //50 Bytes
-    var i = 0;
-    document.getElementById("test").innerHTML = i;
+    <script>
+      var ws = new WebSocket("ws://localhost:8000/testt");
+      document.getElementById("ws").addEventListener("click", async function (e) {
+        e.preventDefault();
+        const upper = parseInt(document.getElementById("Breaks").value);
+        let start = new Date().getTime();
 
-    xhr.onload = () => console.log(xhr.responseText);
+        for (var i = 0; i < upper; i++) {
+          ws.send(JSON.stringify(data));
+          // ws.close();
+        }
+        let end = new Date().getTime();
+        console.log(end - start);
+      });
 
-   
-    
-    var ws = new WebSocket("wss://localhost:8000/test")
+      document.getElementById("api").addEventListener("click", async function (e) {
+        e.preventDefault();
+        const upper = parseInt(document.getElementById("Breaks").value);
 
-    set = () => {
-        i=document.getElementById("Breaks").value;
-        document.getElementById("test").innerHTML = i;
-    }
-    handleOnClickWS = () => {
-        for (let j = 0; j < i; j++) {
-            ws.send(data);}
-    }
+        let start = new Date().getTime();
+        for (var i = 0; i < upper; i++) {
+          await fetch("http://localhost:8000/test", options);
+        }
 
-</script>
+        let end = new Date().getTime();
+        console.log(end - start);
+      });
 
-<button onclick="handleOnClickWS()">WebSocket</button>
-<button onclick="handleOnClickAPI()">API</button>
-<input type="number" id="Breaks" placeholder="">
-<button onclick="set()">SET</button>
-<p id="test"></p>
-<script>
-    set = () => {
-        i=document.getElementById("Breaks").value;
-        document.getElementById("test").innerHTML = i;
-    }
-    handleOnClickWS = () => {
-        for (let j = 0; j < i; j++) {
-            ws.send(data);}
-    }
-    handleOnClickAPI = () => {
-        for (let j = 0; j < i; j++) {
-            let xhr = new XMLHttpRequest();
-            xhr.open("POST", "http://localhost:8000/test");
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.send(data);}
-      
-    }
-</script>
+      var data = {
+        id: 78912,
+        Customer: "Jason Sweet",
+        Nile: "And",
+      };
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      };
+    </script>
+  </body>
+</html>
